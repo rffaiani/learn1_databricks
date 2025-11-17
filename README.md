@@ -9,14 +9,23 @@ staging -> bronze -> silver -> gold
 
 catalog -> schema -> tables
 
+---------------------------------
 catalog: minha_empresa
+
 --schemas:
+
 ---00_staging
+
 ---01_bronze
+
 ---02_silver
+
 ---03_gold
 
 ---------------------------------
+
+
+
 
 
 
