@@ -24,6 +24,15 @@ catalog: minha_empresa
 
 ---------------------------------
 
+Catalog
+ └── Schema
+        ├── Volume (Staging)
+        ├── Tables Bronze
+        ├── Tables Silver
+        └── Tables Gold
+
+
+--------------------------------
 
 
 
