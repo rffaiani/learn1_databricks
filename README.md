@@ -44,6 +44,7 @@ Copiar código
 
 ### Estrutura recomendada:
 
+```
 minha_empresa # Catalog
 ├── 00_staging # Schema com Volumes
 │ └── Volumes/
@@ -52,6 +53,7 @@ minha_empresa # Catalog
 ├── 01_bronze # Tabelas Delta brutas
 ├── 02_silver # Tabelas limpas
 └── 03_gold # Tabelas analíticas
+```
 
 yaml
 Copiar código
@@ -70,40 +72,50 @@ Copiar código
 ## Comandos Úteis
 
 ### Criar catálogo
-
 ```sql
 CREATE CATALOG minha_empresa;
+```
+
 Criar schemas
-sql
-Copiar código
+```sql
 CREATE SCHEMA minha_empresa.00_staging;
 CREATE SCHEMA minha_empresa.01_bronze;
 CREATE SCHEMA minha_empresa.02_silver;
 CREATE SCHEMA minha_empresa.03_gold;
+```
+
 Criar um Volume no Staging
-sql
-Copiar código
+```sql
 CREATE VOLUME minha_empresa.00_staging.arqs;
+```
+
 Listar arquivos do Volume
-python
-Copiar código
+```python
+%python
 dbutils.fs.ls('/Volumes/minha_empresa/00_staging/arqs')
+```
+
 Ingestão Bronze (Exemplo)
 1. Ler arquivo do Staging
-python
-Copiar código
+```
+%python
 raw_path = "/Volumes/minha_empresa/00_staging/arqs/dados.csv"
 
 df = spark.read.csv(raw_path, header=True, inferSchema=True)
+```
+
+
 2. Criar tabela Bronze
+```
 python
-Copiar código
 df.write.format("delta") \
     .mode("overwrite") \
     .saveAsTable("minha_empresa.01_bronze.dados")
+```
+
 Transformação Silver
+```
 python
-Copiar código
 df_silver = (
     df.withColumn("salario", df.salario.cast("double"))
       .dropDuplicates()
@@ -112,13 +124,17 @@ df_silver = (
 df_silver.write.format("delta") \
     .mode("overwrite") \
     .saveAsTable("minha_empresa.02_silver.dados")
+```
+
 Gold (Agregações)
+```
 sql
-Copiar código
 CREATE OR REPLACE TABLE minha_empresa.03_gold.salario_medio AS
 SELECT cidade, AVG(salario) AS salario_medio
 FROM minha_empresa.02_silver.dados
 GROUP BY cidade;
+```
+
 Objetivo do Repositório
 Este repositório serve como:
 
